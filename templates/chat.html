@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Chat with User</h1>
+    <div id="chat-container">
+        <ul id="messages">
+            {{range .Messages}}
+                <li><strong>{{.SenderUsername}}:</strong> {{.Content}}</li>
+            {{else}}
+                <li>No messages yet</li>
+            {{end}}
+        </ul>
+        <form id="message-form">
+            <input type="text" id="content" name="content" placeholder="Type a message" required>
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
+    <script>
+        const chatID = "{{.ChatID}}";  // ID чата
+        const ws = new WebSocket(`ws://${window.location.host}/ws/chat/${chatID}`);
+
+        // Отправка сообщения по кнопке
+        document.getElementById('message-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const content = document.getElementById('content').value;
+            const message = { content: content, chat_id: chatID };
+
+            ws.send(JSON.stringify(message));
+            document.getElementById('content').value = '';  // Очистить поле ввода
+        });
+
+        // Получение сообщений через WebSocket
+        ws.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            const messageElement = document.createElement('li');
+            messageElement.innerHTML = `<strong>${message.SenderUsername}:</strong> ${message.Content}`;
+            document.getElementById('messages').appendChild(messageElement);
+        };
+
+        ws.onerror = function(error) {
+            console.error("WebSocket error:", error);
+        };
+
+        ws.onclose = function() {
+            console.log("WebSocket connection closed");
+        };
+    </script>
+</body>
+</html>

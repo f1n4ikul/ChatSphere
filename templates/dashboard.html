@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6e7f80, #c8d6e5);
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .dashboard-container {
+            max-width: 500px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+        }
+        .dashboard-container:hover {
+            transform: translateY(-10px);
+        }
+        .welcome-message {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .user-info {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .user-info p {
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .btn-logout {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            padding: 12px 24px;
+            border-radius: 30px;
+            margin-top: 30px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn-logout:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+        .btn-logout:active {
+            transform: scale(0.98);
+        }
+        .icon {
+            font-size: 3rem;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .footer-text {
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 20px;
+        }
+        .users-list {
+            margin-top: 30px;
+            text-align: left;
+            padding-left: 0;
+        }
+        .users-list li {
+            list-style-type: none;
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .btn-chat {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-chat:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="icon">
+        <i class="fas fa-user-circle"></i>
+    </div>
+    <h2 class="welcome-message">Welcome, {{.name}}</h2>
+    <div class="user-info">
+        <p><strong>Email:</strong> {{.email}}</p>
+        <p><strong>Username:</strong> {{.username}}</p>
+    </div>
+
+    <h4>Users to Chat With:</h4>
+    <ul class="users-list">
+        {{range .Users}}
+            <li>
+                <span>{{.Username}}</span>
+                <button class="btn-chat" onclick="startChat({{ .ID }})">Start Chat</button>
+            </li>
+        {{else}}
+            <li>No users available to chat.</li>
+        {{end}}
+    </ul>
+
+    <button class="btn-logout" id="logout-btn">Logout</button>
+
+    <p class="footer-text">You are logged in successfully.</p>
+</div>
+
+<script>
+    // Логика для кнопки выхода
+    document.getElementById('logout-btn').addEventListener('click', async function () {
+        try {
+            const response = await fetch('/logout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                window.location.href = '/login'; // Перенаправление на страницу логина
+            } else {
+                alert(data.error || 'Failed to log out');
+            }
+        } catch (error) {
+            alert('Error logging out');
+        }
+    });
+
+    // Функция для создания чата
+    async function startChat(userID) {
+    console.log(userID);
+    try {
+        const response = await fetch(`/start-chat/${userID}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        console.log(data);
+        if (response.ok) {
+            // Перенаправляем на страницу чата
+            window.location.href = `/chats/${data.chat_id}`;
+        } else {
+            alert('Failed to start chat');
+            console.log(data.error);
+            console.log(response.status);
+        }
+    } catch (error) {
+        alert('Error starting chat');
+    }
+}
+</script>
+
+</body>
+</html>

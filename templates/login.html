@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            width: 400px;
+            padding: 20px;
+        }
+
+        .alert {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h3 class="text-center">Login</h3>
+    <div id="error-message" class="alert alert-danger"></div>
+    <div id="success-message" class="alert alert-success"></div>
+    <form id="login-form">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" class="form-control" placeholder="Enter email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('login-form').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        // Получаем данные из формы
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const data = {
+            email,
+            password
+        };
+
+        // Очистка предыдущих сообщений
+        document.getElementById('error-message').style.display = 'none';
+        document.getElementById('success-message').style.display = 'none';
+
+        try {
+            // Отправляем POST запрос на сервер
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Если авторизация успешна
+                document.getElementById('success-message').innerText = result.message || "Login successful!";
+                document.getElementById('success-message').style.display = 'block';
+                window.location.href = '/dashboard'; // Перенаправление на страницу после успешной авторизации
+            } else {
+                // Если ошибка
+                document.getElementById('error-message').innerText = result.error || "Invalid credentials";
+                document.getElementById('error-message').style.display = 'block';
+            }
+
+        } catch (error) {
+            // В случае сетевой ошибки
+            document.getElementById('error-message').innerText = "Network error. Please try again later.";
+            console.error(error);
+            document.getElementById('error-message').style.display = 'block';
+
+        }
+    });
+</script>
+
+</body>
+</html>
+
