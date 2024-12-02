@@ -43,6 +43,7 @@ func Login(c *gin.Context) {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
         return
     }
+    
 
     // Редирект на Dashboard после успешной авторизации
    c.JSON(http.StatusOK, gin.H{

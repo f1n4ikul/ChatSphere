@@ -56,6 +56,7 @@ func StartChat(c *gin.Context) {
 
 
 // Отправить сообщение в чат
+// Отправить сообщение
 func SendMessage(c *gin.Context) {
     chatID, _ := strconv.Atoi(c.Param("chatID"))
     var input struct {
@@ -66,22 +67,25 @@ func SendMessage(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
         return
     }
-
-    // userID := 1 // ID текущего пользователя, который отправляет сообщение
+    
     userID, err := utils.GetUserFromSession(c)
     if err != nil || userID == 0 {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
         return
     }
 
-    // Отправляем сообщение
-    _, err = repository.SendMessage(uint(chatID), uint(userID), input.Content)
+    // Сохраняем сообщение в базе данных
+    message, err := repository.SaveMessage(uint(chatID), uint(userID), input.Content)
     if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send message"})
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save message"})
         return
     }
 
-    c.Redirect(http.StatusFound, "/chats/"+strconv.Itoa(chatID))
+    // Отправляем сообщение всем подключенным к WebSocket
+    // Здесь WebSocket будет обновлять чат для всех пользователей
+    c.JSON(http.StatusOK, gin.H{
+        "message": message,
+    })
 }
 
 // Получить все сообщения из чата

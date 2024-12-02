@@ -26,9 +26,6 @@ func SetupRouter() *gin.Engine {
         c.Next()
     })
 
-    // Настройка статических файлов
-    router.Static("/static", "./static")
-
     // Рендеринг HTML-шаблонов
     router.LoadHTMLGlob("templates/*")
 

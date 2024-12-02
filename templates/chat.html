@@ -5,43 +5,298 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #E8EAF6, #C5CAE9);
+            overflow: hidden;
+            box-sizing: border-box;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Chat Container */
+        #chat-container {
+            width: 450px;
+            max-width: 100%;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #chat-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Header */
+        #chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #B3A1E1;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #4A148C;
+            margin: 0;
+            font-size: 1.8em;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-image: url('profile.jpg'); /* Replace with your profile image URL */
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            border: 2px solid #B3A1E1;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Messages List */
+        #messages {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 10px;
+        }
+
+        /* Message Styles */
+        #messages li {
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border-radius: 18px;
+            font-size: 15px;
+            position: relative;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            max-width: 80%;
+            animation: popin 0.6s ease-out;
+        }
+
+        /* User's Message */
+        #messages li.user-message {
+            background-color: #D1C4E9;
+            align-self: flex-end;
+            border-radius: 20px 20px 0 20px;
+            transform: scale(1.05);
+        }
+
+        /* Other User's Message */
+        #messages li.other-message {
+            background-color: #F3E5F5;
+            align-self: flex-start;
+            border-radius: 20px 20px 20px 0;
+        }
+
+        /* Time and Status */
+        .message-time {
+            font-size: 12px;
+            color: #B3A1E1;
+            margin-left: 5px;
+            font-style: italic;
+        }
+
+        .message-status {
+            font-size: 12px;
+            color: #4CAF50;
+            margin-left: 10px;
+        }
+
+        /* Input Form */
+        #message-form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            border-top: 2px solid #E8EAF6;
+            padding-top: 10px;
+        }
+
+        #content {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #C5CAE9;
+            border-radius: 25px;
+            font-size: 14px;
+            margin-right: 15px;
+            outline: none;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        #content:focus {
+            box-shadow: 0 0 8px rgba(142, 36, 170, 0.4);
+            border-color: #4A148C;
+        }
+
+        button {
+            padding: 16px 32px;
+            background-color: #4A148C;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #7B1FA2;
+            transform: translateY(-2px);
+        }
+
+        /* Animation for new messages */
+        @keyframes popin {
+            0% {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Scrollbar styling */
+        #messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #messages::-webkit-scrollbar-thumb {
+            background: #B3A1E1;
+            border-radius: 4px;
+        }
+
+        #messages::-webkit-scrollbar-track {
+            background: #F5F5F5;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 600px) {
+            #chat-container {
+                padding: 15px;
+                height: 500px;
+            }
+
+            #content {
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            button {
+                padding: 14px 28px;
+            }
+
+            .profile-icon {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Chat with User</h1>
     <div id="chat-container">
+        <div id="chat-header">
+            <h1>Chat with User</h1>
+            <a href="/dashboard">
+                <div class="profile-icon"></div>
+            </a>
+        </div>
+
         <ul id="messages">
             {{range .Messages}}
-                <li><strong>{{.SenderUsername}}:</strong> {{.Content}}</li>
+                <li id="message-{{.ID}}" class="{{if eq .SenderUsername "You"}}user-message{{else}}other-message{{end}}">
+                    <strong>{{.SenderUsername}}:</strong> {{.Content}}
+                    <span class="message-time">({{.CreatedAt.Format "2006-01-02 15:04:05"}})</span>
+                    <span class="message-status" id="status-{{.ID}}">{{.Status}}</span>
+                </li>
             {{else}}
                 <li>No messages yet</li>
             {{end}}
         </ul>
+
         <form id="message-form">
             <input type="text" id="content" name="content" placeholder="Type a message" required>
-            <button type="submit">Send Message</button>
+            <button type="submit">Send</button>
         </form>
     </div>
 
     <script>
-        const chatID = "{{.ChatID}}";  // ID чата
+        // Tracking cursor position for dynamic background effect
+        document.addEventListener('mousemove', function(event) {
+            const cursorX = event.clientX / window.innerWidth * 100;
+            const cursorY = event.clientY / window.innerHeight * 100;
+
+            // Update CSS variables for background effect
+            document.body.style.setProperty('--cursor-x', `${cursorX}%`);
+            document.body.style.setProperty('--cursor-y', `${cursorY}%`);
+        });
+
+        const chatID = "{{.ChatID}}";  // Chat ID
         const ws = new WebSocket(`ws://${window.location.host}/ws/chat/${chatID}`);
 
-        // Отправка сообщения по кнопке
+        // Sending message
         document.getElementById('message-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const content = document.getElementById('content').value;
             const message = { content: content, chat_id: chatID };
 
             ws.send(JSON.stringify(message));
-            document.getElementById('content').value = '';  // Очистить поле ввода
+            document.getElementById('content').value = '';  // Clear input field
         });
 
-        // Получение сообщений через WebSocket
+        // Receiving message through WebSocket
         ws.onmessage = function(event) {
             const message = JSON.parse(event.data);
+
+            // Create new message element
             const messageElement = document.createElement('li');
-            messageElement.innerHTML = `<strong>${message.SenderUsername}:</strong> ${message.Content}`;
+            
+            // Define message style (sender/receiver)
+            const isUserMessage = message.SenderUsername === "You" ? "user-message" : "other-message";
+            
+            // Format HTML for displaying message with sender's name and status
+            messageElement.classList.add(isUserMessage, 'new-message');
+            messageElement.innerHTML = `
+                <strong>${message.SenderUsername}:</strong> ${message.Content}
+                <span class="message-time">(${new Date(message.CreatedAt).toLocaleString()})</span>
+                <span class="message-status" id="status-${message.ID}">${message.Status}</span>
+            `;
+            
+            // Add message to the list
             document.getElementById('messages').appendChild(messageElement);
+            
+            // Auto scroll to the latest message
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
         };
 
         ws.onerror = function(error) {
