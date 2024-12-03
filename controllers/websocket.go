@@ -116,6 +116,7 @@ func WebSocketHandler(c *gin.Context) {
 			SenderUsername: user.Username,
 			Content:        savedMessage.Content,
 			CreatedAt:      savedMessage.CreatedAt,
+			Status:        "unread",
 		}
 
 		// Сериализуем сообщение в JSON
@@ -145,7 +146,7 @@ func WebSocketHandler(c *gin.Context) {
 		manager.mutex.Unlock()
 
 		// Отправляем подтверждение клиенту
-		conn.WriteJSON(savedMessage)
+		// conn.WriteJSON(savedMessage)
 	}
 }
 
