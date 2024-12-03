@@ -12,22 +12,104 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
         }
 
         .card {
             width: 400px;
-            padding: 20px;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .form-group label {
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #8a2be2;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+        }
+
+        .btn-primary {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            padding: 12px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #7a1db3;
+            border-color: #7a1db3;
+            transform: scale(1.05);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .footer a {
+            color: #8a2be2;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #7a1db3;
         }
 
         .alert {
             display: none;
+            margin-bottom: 20px;
+        }
+
+        .alert-danger, .alert-success {
+            font-size: 1rem;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h3 class="text-center">Register</h3>
+    <h3>Register</h3>
     <div id="error-message" class="alert alert-danger"></div>
     <div id="success-message" class="alert alert-success"></div>
     <form id="register-form">
@@ -53,13 +135,16 @@
         </div>
         <button type="submit" class="btn btn-primary btn-block">Register</button>
     </form>
+    <div class="footer">
+        <p>Already have an account? <a href="/login">Login</a></p>
+    </div>
 </div>
 
 <script>
     document.getElementById('register-form').addEventListener('submit', async function (event) {
         event.preventDefault();
 
-        // Получаем данные из формы
+        // Get form data
         const email = document.getElementById('email').value;
         const username = document.getElementById('username').value;
         const name = document.getElementById('name').value;
@@ -74,12 +159,12 @@
             password
         };
 
-        // Очистка предыдущих сообщений
+        // Clear previous messages
         document.getElementById('error-message').style.display = 'none';
         document.getElementById('success-message').style.display = 'none';
 
         try {
-            // Отправляем POST запрос на сервер
+            // Send POST request to server
             const response = await fetch('/register', {
                 method: 'POST',
                 headers: {
@@ -91,18 +176,22 @@
             const result = await response.json();
 
             if (response.ok) {
-                // Если регистрация успешна
+                // If registration is successful
                 document.getElementById('success-message').innerText = result.message || "Registration successful!";
                 document.getElementById('success-message').style.display = 'block';
                 document.getElementById('register-form').reset();
+
+                setTimeout(function() {
+                    window.location.href = '/login';
+                }, 2000);
             } else {
-                // Если ошибка
+                // If error
                 document.getElementById('error-message').innerText = result.error || "An error occurred";
                 document.getElementById('error-message').style.display = 'block';
             }
 
         } catch (error) {
-            // В случае сетевой ошибки
+            // Network error
             document.getElementById('error-message').innerText = "Network error. Please try again later.";
             document.getElementById('error-message').style.display = 'block';
         }

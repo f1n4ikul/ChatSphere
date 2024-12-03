@@ -1,38 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Application</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Мессенджер</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #8A2BE2, #4B0082);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            text-align: center;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease-in-out;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        }
+
+        
+
+        .container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-out;
+        }
+
+        p {
+            color: darkviolet;
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInText 1s 0.5s forwards;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #8A2BE2;
+            color: #ffffff;
+            padding: 12px 30px;
+            margin: 10px 0;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #7a1db3;
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .links {
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInText 1s 1s forwards;
+        }
+
+        .links a {
+            
+            text-decoration: none;
+            font-size: 1.1em;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+        }
+
+        .links a:hover {
+            
+            transform: translateY(-5px);
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #bbb;
+            opacity: 0;
+            animation: fadeInText 1s 1.5s forwards;
+        }
+
+        .footer a {
+            color: #8A2BE2;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #7a1db3;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fadeInText {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Chat Application</h1>
-    <div class="container">
-        <h2>Login</h2>
-        <form action="/login" method="post">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <button type="submit">Login</button>
-        </form>
 
-        <h2>Register</h2>
-        <form action="/register" method="post">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-            <label for="surname">Surname:</label>
-            <input type="text" id="surname" name="surname" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <button type="submit">Register</button>
-        </form>
-        <a href="/register">Register</a>
+    <div class="container">
+        <h1>Добро пожаловать в Мессенджер!</h1>
+        <p>Мессенджер — это удобное приложение для общения с друзьями, семьей и коллегами. Обменивайтесь сообщениями, делитесь фотографиями и видео, общайтесь в реальном времени.</p>
+
+        <div class="links">
+            <a href="/login" class="btn">Войти</a>
+            <a href="/register" class="btn">Регистрация</a>
+        </div>
+
+        <div class="footer">
+            <p>Новый пользователь? <a href="/register">Зарегистрируйтесь</a></p>
+            <p>Уже есть аккаунт? <a href="/login">Войдите</a></p>
+        </div>
     </div>
+
 </body>
 </html>
