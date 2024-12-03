@@ -233,12 +233,14 @@
         </div>
 
         <ul id="messages">
-            {{range .Messages}}
-                <li id="message-{{.ID}}" class="{{if eq .SenderUsername "You"}}user-message{{else}}other-message{{end}}">
-                    <strong>{{.SenderUsername}}:</strong> {{.Content}}
-                    <span class="message-time">({{.CreatedAt.Format "2006-01-02 15:04:05"}})</span>
-                    <span class="message-status" id="status-{{.ID}}">{{.Status}}</span>
-                </li>
+            {{if .Messages}}
+                {{range .Messages}}
+                    <li id="message-{{.ID}}" class="{{if eq .SenderUsername "You"}}user-message{{else}}other-message{{end}}">
+                        <strong>{{.SenderUsername}}:</strong> {{.Content}}
+                        <span class="message-time">({{.CreatedAt.Format "2006-01-02 15:04:05"}})</span>
+                        <span class="message-status" id="status-{{.ID}}">{{.Status}}</span>
+                    </li>
+                {{end}}
             {{else}}
                 <li>No messages yet</li>
             {{end}}
@@ -277,14 +279,10 @@
         // Receiving message through WebSocket
         ws.onmessage = function(event) {
             const message = JSON.parse(event.data);
-
-            // Create new message element
+            
+            // Создаём новый элемент сообщения
             const messageElement = document.createElement('li');
-            
-            // Define message style (sender/receiver)
             const isUserMessage = message.SenderUsername === "You" ? "user-message" : "other-message";
-            
-            // Format HTML for displaying message with sender's name and status
             messageElement.classList.add(isUserMessage, 'new-message');
             messageElement.innerHTML = `
                 <strong>${message.SenderUsername}:</strong> ${message.Content}
@@ -292,12 +290,21 @@
                 <span class="message-status" id="status-${message.ID}">${message.Status}</span>
             `;
             
-            // Add message to the list
-            document.getElementById('messages').appendChild(messageElement);
+            // Добавляем сообщение в список
+            const messagesList = document.getElementById('messages');
+            messagesList.appendChild(messageElement);
             
-            // Auto scroll to the latest message
-            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            // Проверяем и скрываем "No messages yet", если оно присутствует
+            const noMessagesText = messagesList.querySelector('li');
+            if (noMessagesText && noMessagesText.textContent === 'No messages yet') {
+                noMessagesText.style.display = 'none';
+            }
+
+            // Прокручиваем список до последнего сообщения
+            messagesList.scrollTop = messagesList.scrollHeight;
         };
+
+
 
         ws.onerror = function(error) {
             console.error("WebSocket error:", error);
