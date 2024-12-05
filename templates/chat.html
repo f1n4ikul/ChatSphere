@@ -6,7 +6,7 @@
     <title>Chat</title>
     <link rel="stylesheet" href="/static/style.css">
     <style>
-        /* General Styles */
+        /* Общие стили */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -22,7 +22,7 @@
             transition: background-color 0.3s ease;
         }
 
-        /* Chat Container */
+        /* Контейнер чата */
         #chat-container {
             width: 450px;
             max-width: 100%;
@@ -42,7 +42,7 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
         }
 
-        /* Header */
+        /* Заголовок */
         #chat-header {
             display: flex;
             justify-content: space-between;
@@ -64,7 +64,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-image: url('profile.jpg'); /* Replace with your profile image URL */
+            background-image: url('profile.jpg'); /* Замените на URL вашего изображения */
             background-size: cover;
             background-position: center;
             cursor: pointer;
@@ -76,7 +76,7 @@
             transform: scale(1.1);
         }
 
-        /* Messages List */
+        /* Список сообщений */
         #messages {
             list-style-type: none;
             padding: 0;
@@ -87,7 +87,7 @@
             padding-right: 10px;
         }
 
-        /* Message Styles */
+        /* Стили сообщений */
         #messages li {
             padding: 12px 16px;
             margin-bottom: 12px;
@@ -98,24 +98,25 @@
             transition: transform 0.3s ease, background-color 0.3s ease;
             max-width: 80%;
             animation: popin 0.6s ease-out;
+            margin-left: auto; /* Центрируем по себе */
+            margin-right: auto; /* Центрируем по себе */
         }
 
-        /* User's Message */
+        /* Сообщение от зарегистрированного пользователя (по правому краю) */
         #messages li.user-message {
             background-color: #D1C4E9;
-            align-self: flex-end;
+            align-self: flex-end; /* Выравнивание по правому краю */
             border-radius: 20px 20px 0 20px;
-            transform: scale(1.05);
         }
 
-        /* Other User's Message */
+        /* Сообщение от других пользователей (по левому краю) */
         #messages li.other-message {
             background-color: #F3E5F5;
-            align-self: flex-start;
+            align-self: flex-start; /* Выравнивание по левому краю */
             border-radius: 20px 20px 20px 0;
         }
 
-        /* Time and Status */
+        /* Время и статус */
         .message-time {
             font-size: 12px;
             color: #B3A1E1;
@@ -129,7 +130,7 @@
             margin-left: 10px;
         }
 
-        /* Input Form */
+        /* Форма ввода сообщения */
         #message-form {
             display: flex;
             justify-content: space-between;
@@ -171,7 +172,7 @@
             transform: translateY(-2px);
         }
 
-        /* Animation for new messages */
+        /* Анимация для новых сообщений */
         @keyframes popin {
             0% {
                 transform: scale(0.95);
@@ -183,7 +184,7 @@
             }
         }
 
-        /* Scrollbar styling */
+        /* Стилизация полосы прокрутки */
         #messages::-webkit-scrollbar {
             width: 8px;
         }
@@ -197,7 +198,7 @@
             background: #F5F5F5;
         }
 
-        /* Mobile Styles */
+        /* Мобильные стили */
         @media (max-width: 600px) {
             #chat-container {
                 padding: 15px;
@@ -227,19 +228,22 @@
     <div id="chat-container">
         <div id="chat-header">
             <h1>Chat with User</h1>
-            <a href="/dashboard">
-                <div class="profile-icon"></div>
-            </a>
+            <form id="close-chat-form" action="/ws/chat/{{.ChatID}}/close" method="post">
+                <button type="submit">Close Chat</button>
+            </form>
+
         </div>
 
         <ul id="messages">
             {{if .Messages}}
                 {{range .Messages}}
-                    <li id="message-{{.ID}}" class="{{if eq .SenderUsername "You"}}user-message{{else}}other-message{{end}}">
+                    <li id="message-{{.ID}}" class="{{if eq .SenderUsername $.CurrentUser}}user-message{{else}}other-message{{end}}">
                         <strong>{{.SenderUsername}}:</strong> {{.Content}}
                         <span class="message-time">({{.CreatedAt.Format "2006-01-02 15:04:05"}})</span>
                         <span class="message-status" id="status-{{.ID}}">{{.Status}}</span>
                     </li>
+
+
                 {{end}}
             {{else}}
                 <li>No messages yet</li>
@@ -253,40 +257,49 @@
     </div>
 
     <script>
-        // Tracking cursor position for dynamic background effect
-        document.addEventListener('mousemove', function(event) {
-            const cursorX = event.clientX / window.innerWidth * 100;
-            const cursorY = event.clientY / window.innerHeight * 100;
-
-            // Update CSS variables for background effect
-            document.body.style.setProperty('--cursor-x', `${cursorX}%`);
-            document.body.style.setProperty('--cursor-y', `${cursorY}%`);
-        });
-
+        const currentUser = "{{.CurrentUser}}";  // Переменная для текущего пользователя
+        console.log(currentUser, "Переменная для текущего пользователя");
         const chatID = "{{.ChatID}}";  // Chat ID
         const ws = new WebSocket(`ws://${window.location.host}/ws/chat/${chatID}`);
 
-        // Sending message
+        // Отправка сообщения
         document.getElementById('message-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const content = document.getElementById('content').value;
-            const message = { content: content, chat_id: chatID };
 
-            ws.send(JSON.stringify(message));
-            document.getElementById('content').value = '';  // Clear input field
+            if (ws.readyState === WebSocket.OPEN) { // Проверка на состояние соединения
+                const message = { content: content, chat_id: chatID };
+                ws.send(JSON.stringify(message));
+                document.getElementById('content').value = '';  // Очищаем поле ввода
+            } else {
+                console.warn("WebSocket connection is closed. Message not sent.");
+            }
         });
 
-        // Receiving message through WebSocket
+        window.onunload = async function() {
+            const response = await fetch(`/ws/chat/${chatID}/close`, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                window.location.href = '/dashboard';
+            }
+        };
+
+        // Получение сообщения через WebSocket
         ws.onmessage = function(event) {
+
             const message = JSON.parse(event.data);
-            
+             console.log("Message received:", message);
+
             // Создаём новый элемент сообщения
             const messageElement = document.createElement('li');
-            const isUserMessage = message.SenderUsername === "You" ? "user-message" : "other-message";
+            const isUserMessage = message.SenderUsername === currentUser ? "user-message" : "other-message";
             messageElement.classList.add(isUserMessage, 'new-message');
-            messageElement.innerHTML = `
-                <strong>${message.SenderUsername}:</strong> ${message.Content}
-                <span class="message-time">(${new Date(message.CreatedAt).toLocaleString()})</span>
+            messageElement.innerHTML = ` 
+                <strong>${message.SenderUsername}:</strong> ${message.Content} 
+                <span class="message-time">(${new Date(message.CreatedAt).toLocaleString()})</span> 
                 <span class="message-status" id="status-${message.ID}">${message.Status}</span>
             `;
             
@@ -304,15 +317,20 @@
             messagesList.scrollTop = messagesList.scrollHeight;
         };
 
-
-
         ws.onerror = function(error) {
             console.error("WebSocket error:", error);
+            document.getElementById('message-form').querySelector('button').disabled = true;
+            document.getElementById('content').disabled = true;
         };
 
         ws.onclose = function() {
             console.log("WebSocket connection closed");
+            // Показываем уведомление о потере соединения
+            console.log("Connection lost. Please reload the page to reconnect.");
+            window.location.href = '/dashboard';  // Редирект в случае закрытия соединения
         };
+
+
     </script>
 </body>
 </html>

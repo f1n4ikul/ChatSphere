@@ -31,6 +31,23 @@ func SendMessage(chatID uint, senderID uint, content string) (*models.Message, e
     return &message, nil
 }
 
+func MarkMessageAsReadByUser(messageID uint, userID uint) error {
+    query := `INSERT INTO message_reads (message_id, user_id) VALUES ($1, $2)`
+    _, err := config.DB.Exec(context.Background(), query, messageID, userID)
+    return err
+}
+
+// Проверить, прочитал ли пользователь сообщение
+func IsMessageReadByUser(messageID uint, userID uint) (bool, error) {
+    query := `SELECT EXISTS (SELECT 1 FROM message_reads WHERE message_id = $1 AND user_id = $2)`
+    var exists bool
+    err := config.DB.QueryRow(context.Background(), query, messageID, userID).Scan(&exists)
+    if err != nil {
+        return false, err
+    }
+    return exists, nil
+}
+
 // Получить все сообщения из чата
 func GetMessages(chatID uint) ([]models.Message, error) {
     var messages []models.Message
@@ -94,7 +111,7 @@ func SaveMessage(chatID, senderID uint, content string) (*models.Message, error)
         ChatID:    chatID,
         SenderID:  senderID,
         Content:   content,
-        Status:    "unread",
+        Status:    "sent",
         CreatedAt: createdAt,
     }
 
