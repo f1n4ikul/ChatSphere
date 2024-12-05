@@ -51,6 +51,8 @@ func SetupRouter() *gin.Engine {
 
     // Отправить сообщение
     router.POST("/chats/:chatID/messages", controllers.SendMessage)
+    router.POST("/messages/:messageID/read", controllers.MarkMessageAsRead)
+    router.POST("/ws/chat/:chatID/close", controllers.CloseWebSocket)
 
     router.GET("/chat/:chatID", controllers.ChatPage)
     router.GET("/ws/chat/:chatID", controllers.WebSocketHandler)

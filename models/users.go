@@ -10,4 +10,7 @@ type User struct {
     Name     string `json:"name"`
     Surname  string `json:"surname"`
     Password string `json:"password"`
+    Captcha  string `json:"captcha"`
+    Action   string `json:"action"`
+
 }
