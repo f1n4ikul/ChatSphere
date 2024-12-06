@@ -16,96 +16,159 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #9C27B0, #6A1B9A);
             overflow: hidden;
-            transition: background-color 0.3s ease;
+            position: relative;
+            background-color: #372247;
+            background-size: 400% 400%;
+            animation: gradientAnimation 20s ease infinite;
+        }
+
+        /* Particle Canvas */
+        #particlesCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Keep particles behind the content */
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Dashboard Container */
         .dashboard-container {
             width: 100%;
-            max-width: 650px;
+            max-width: 750px;
             padding: 40px;
-            background: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 25px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
             text-align: center;
+            backdrop-filter: blur(10px); /* Add blur effect */
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
         }
 
         .dashboard-container:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
         }
 
-        /* Header */
-        .icon {
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-icon {
+            width: 120px;
+            height: 120px;
+            color: #fff;
+            background: linear-gradient(135deg, #673AB7, #9C27B0);
+            padding: 4.5%;
+            border-radius: 50%;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Custom Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px; /* Set the width of the scrollbar */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #673AB7, #9C27B0); /* Add gradient to scrollbar thumb */
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #9C27B0, #673AB7); /* Darker gradient on hover */
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2); /* Light background for scrollbar track */
+            border-radius: 5px;
+        }
+
+        /* For Firefox */
+        scrollbar {
+            width: 10px;
+        }
+
+        scrollbar-thumb {
+            background: linear-gradient(135deg, #673AB7, #9C27B0);
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+        }
+
+        .fas {
             font-size: 4rem;
-            color: #673AB7;
-            margin-bottom: 20px;
         }
 
         .welcome-message {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 700;
             color: #333;
             margin-bottom: 20px;
             letter-spacing: 1px;
         }
 
-        .user-info {
-            margin-top: 20px;
-            text-align: left;
-            font-size: 1.1rem;
-            color: #333;
+        /* User Info Card */
+        .user-info-card {
+            background: #f7f7f7;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.2s ease;
         }
 
-        .user-info p {
-            margin-bottom: 12px;
-            font-weight: 500;
+        .user-info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
         }
 
-        /* Users List */
-        h4 {
-            font-size: 1.4rem;
-            color: #333;
-            margin-top: 30px;
+        .user-info-card p {
+            font-size: 1.25rem;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .user-info-card strong {
+            color: #673AB7;
             font-weight: 600;
         }
 
-        .users-list {
-            list-style-type: none;
-            padding-left: 0;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .users-list li {
-            display: flex;
-            justify-content: space-between;
-            margin: 12px 0;
-            font-size: 1.1rem;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .users-list li:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        /* Button Styles */
+        .btn-chat, .btn-logout {
+            font-size: 1.2rem;
+            padding: 15px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
 
         .btn-chat {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .btn-chat:hover {
@@ -117,18 +180,13 @@
             transform: scale(0.98);
         }
 
-        /* Logout Button */
         .btn-logout {
             background-color: #E91E63;
             color: white;
             border: none;
-            font-size: 1.2rem;
-            padding: 12px 24px;
-            border-radius: 30px;
-            margin-top: 30px;
             width: 100%;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .btn-logout:hover {
@@ -140,101 +198,202 @@
             transform: scale(0.98);
         }
 
-        /* Footer */
-        .footer-text {
-            font-size: 0.9rem;
-            color: #777;
-            margin-top: 20px;
+        /* Users List */
+        h4 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-top: 40px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        /* Mobile Styles */
-        @media (max-width: 600px) {
-            .dashboard-container {
-                padding: 25px;
-                width: 90%;
-            }
+        .users-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 20px;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
 
-            .welcome-message {
-                font-size: 2rem;
-            }
+        .users-list li {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            font-size: 1.1rem;
+            padding: 12px;
+            background-color: #f1f1f1;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            align-items: center;
+            gap: 15px;
+        }
 
-            .btn-chat {
-                padding: 8px 15px;
-            }
+        .users-list li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
 
-            .btn-logout {
-                padding: 10px 20px;
-            }
+        /* Footer Text */
+        .footer-text {
+            font-size: 1rem;
+            color: #777;
+            margin-top: 30px;
+            font-weight: 400;
+        }
+        .container-card{
+            display: flex;
+            gap: 40px;
         }
     </style>
 </head>
 <body>
 
+<canvas id="particlesCanvas"></canvas>
+
 <div class="dashboard-container">
-    <div class="icon">
-        <i class="fas fa-user-circle"></i>
-    </div>
-    <h2 class="welcome-message">Welcome, {{.name}}</h2>
-    <div class="user-info">
-        <p><strong>Email:</strong> {{.email}}</p>
-        <p><strong>Username:</strong> {{.username}}</p>
+    <div class="profile-header">
+        <h2 class="welcome-message">Добро пожаловать, {{.name}}</h2>
+        <div class="container-card">
+            <div class="profile-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div>
+                <div class="user-info-card">
+                    <p><strong>Email:</strong> {{.email}}</p>
+                    <p><strong>Username:</strong> {{.username}}</p>
+                </div>
+            </div>
+
+        </div>
+    
     </div>
 
-    <h4>Users to Chat With:</h4>
+    <h4>Чаты:</h4>
     <ul class="users-list">
         {{range .Users}}
             <li>
                 <span>{{.Username}}</span>
-                <button class="btn-chat" onclick="startChat({{ .ID }})">Start Chat</button>
+                <button class="btn-chat" onclick="startChat({{ .ID }})">Начать чат</button>
             </li>
         {{else}}
             <li>No users available to chat.</li>
         {{end}}
     </ul>
 
-    <button class="btn-logout" id="logout-btn">Logout</button>
+    <button class="btn-logout" id="logout-btn">Выйти из аккаунта</button>
 
-    <p class="footer-text">You are logged in successfully.</p>
+    <p class="footer-text">Вы успешно авторизовались.</p>
 </div>
 
 <script>
-    // Logout Logic
-    document.getElementById('logout-btn').addEventListener('click', async function () {
-        try {
-            const response = await fetch('/logout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
+// Particle Animation Code (no changes here)
+const canvas = document.getElementById('particlesCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+let particles = [];
 
-            const data = await response.json();
-            if (response.ok) {
-                window.location.href = '/login'; // Redirect to login page
-            } else {
-                alert(data.error || 'Failed to log out');
-            }
-        } catch (error) {
-            alert('Error logging out');
+class Particle {
+    constructor(x, y, color, radius, velocity) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = radius;
+        this.velocity = velocity;
+        this.alpha = 1;  // Transparency
+    }
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+    update() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.alpha -= 0.01;
+        if (this.alpha <= 0) this.alpha = 0;
+        this.draw();
+    }
+}
+
+function randomIntFromRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function randomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (particles.length < 500) {
+        particles.push(new Particle(
+            randomIntFromRange(0, canvas.width),
+            randomIntFromRange(0, canvas.height),
+            randomColor(),
+            randomIntFromRange(2, 6),
+            { x: randomIntFromRange(-1, 1), y: randomIntFromRange(-1, 1) }
+        ));
+    }
+    particles.forEach((particle, index) => {
+        particle.update();
+        if (particle.alpha <= 0) {
+            particles.splice(index, 1);
         }
     });
+}
 
-    // Start Chat Logic
-    async function startChat(userID) {
-        console.log(userID);
-        try {
-            const response = await fetch(`/start-chat/${userID}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            const data = await response.json();
-            if (response.ok) {
-                window.location.href = `/chats/${data.chat_id}`;
-            } else {
-                alert('Failed to start chat');
-            }
-        } catch (error) {
-            alert('Error starting chat');
+animate();
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+// Logout Logic
+document.getElementById('logout-btn').addEventListener('click', async function () {
+    try {
+        const response = await fetch('/logout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            window.location.href = '/login';
+        } else {
+            alert(data.error || 'Failed to log out');
         }
+    } catch (error) {
+        alert('Error logging out');
     }
+});
+
+// Start Chat Logic
+async function startChat(userID) {
+    try {
+        const response = await fetch(`/start-chat/${userID}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            window.location.href = `/chats/${data.chat_id}`;
+        } else {
+            alert('Failed to start chat');
+        }
+    } catch (error) {
+        alert('Error starting chat');
+    }
+}
 </script>
 
 </body>
