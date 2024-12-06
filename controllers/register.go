@@ -6,17 +6,52 @@ import (
 	"chat-app/utils"
 	"fmt"
 	"log"
+	"bytes"
+	"encoding/json"
 	"net/http"
-	"github.com/dpapathanasiou/go-recaptcha"
 	"github.com/gin-gonic/gin"
 )
 
+
+
 const recaptchaSecretKey string = "6Lcc9ZIqAAAAAGGyWl3_g02b5yPYHdFERbXSFx6J" // Ваш секретный ключ
 
-func init() {
-	// Инициализация reCAPTCHA с секретным ключом
-	recaptcha.Init(recaptchaSecretKey)
-	log.Println("reCAPTCHA initialized successfully.")
+// Функция для проверки капчи
+func verifyCaptcha(captchaResponse string, clientIP string) bool {
+	url := "https://www.google.com/recaptcha/api/siteverify"
+	data := fmt.Sprintf("secret=%s&response=%s&remoteip=%s", recaptchaSecretKey, captchaResponse, clientIP)
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(data)))
+	if err != nil {
+		log.Println("Error creating POST request:", err)
+		return false
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("Error making HTTP request:", err)
+		return false
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Success    bool     `json:"success"`
+		ErrorCodes []string `json:"error-codes"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Println("Error decoding CAPTCHA verification response:", err)
+		return false
+	}
+
+	// Проверка на успешность капчи
+	if result.Success {
+		return true
+	}
+	log.Println("reCAPTCHA failed:", result.ErrorCodes)
+	return false
 }
 
 func Register(c *gin.Context) {
@@ -43,7 +78,7 @@ func Register(c *gin.Context) {
 
 	// Создание пользователя в базе данных
 	if err := repository.CreateUser(&user); err != nil {
-		fmt.Errorf("Failed to create user: %v", err)
+		log.Printf("Failed to create user: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
@@ -51,19 +86,3 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
 }
 
-// Функция для проверки капчи
-func verifyCaptcha(captchaResponse string, clientIP string) bool {
-	// Используем recaptcha.Confirm для проверки ответа
-	success, err := recaptcha.Confirm(clientIP, captchaResponse)
-	if err != nil {
-		log.Println("Error verifying captcha:", err)
-		return false
-	}
-
-	if !success {
-		log.Println("Captcha verification failed.")
-		return false
-	}
-
-	return true
-}

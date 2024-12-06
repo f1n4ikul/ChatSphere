@@ -6,6 +6,7 @@
     <title>Registration</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+
         body {
             background-color: #f4f4f9;
             display: flex;
@@ -104,12 +105,19 @@
             font-size: 1rem;
             font-weight: 600;
         }
+        .g-recaptcha{
+            margin: 0px 0 10px 0;
+        }
+        .form-recaptcha{
+            margin: 20px 0 20px 0;
+        }
     </style>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 
 <div class="card">
-    <h3>Register</h3>
+    <h3>Регистрация</h3>
     <div id="error-message" class="alert alert-danger"></div>
     <div id="success-message" class="alert alert-success"></div>
     <form id="register-form">
@@ -133,28 +141,26 @@
             <label for="password">Password</label>
             <input type="password" id="password" class="form-control" placeholder="Enter password" required>
         </div>
-        <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="6Lcc9ZIqAAAAAHyyeUWdtqpy9Y5VIEwlc67zyTNW"></div> <!-- Добавьте капчу здесь -->
+        <div class="form-recaptcha">
+            <label for="">Потвердите что вы не бот:</label>
+            <div class="g-recaptcha" data-sitekey="6Lcc9ZIqAAAAAHyyeUWdtqpy9Y5VIEwlc67zyTNW"></div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Register</button>
+
+        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
     </form>
     <div class="footer">
-        <p>Already have an account? <a href="/login">Login</a></p>
+        <p>Уже есть аккаунт? <a href="/login">Войти</a></p>
     </div>
 </div>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script>
     document.getElementById('register-form').addEventListener('submit', async function (event) {
         event.preventDefault();
 
-        // Получаем ответ капчи
-        const captchaResponse = grecaptcha.getResponse();
-        console.log(captchaResponse);
+        const captchaResponse = grecaptcha.getResponse(); // Получаем ответ капчи
 
-        // Если капча не пройдена
         if (!captchaResponse) {
-            document.getElementById('error-message').innerText = "Please complete the CAPTCHA!";
+            document.getElementById('error-message').innerText = "Please complete the CAPTCHA";
             document.getElementById('error-message').style.display = 'block';
             return;
         }
@@ -195,7 +201,7 @@
 
                 setTimeout(function() {
                     window.location.href = '/login';
-                }, 2000);
+                }, 1000);
             } else {
                 // Если ошибка
                 document.getElementById('error-message').innerText = result.error || "An error occurred";
