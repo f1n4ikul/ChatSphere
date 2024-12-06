@@ -227,9 +227,9 @@
 <body>
     <div id="chat-container">
         <div id="chat-header">
-            <h1>Chat with User</h1>
+            <h1>Чат</h1>
             <form id="close-chat-form" action="/ws/chat/{{.ChatID}}/close" method="post">
-                <button type="submit">Close Chat</button>
+                <button type="submit"> Закрыть чат</button>
             </form>
 
         </div>
@@ -246,13 +246,13 @@
 
                 {{end}}
             {{else}}
-                <li>No messages yet</li>
+                <li>Сообщений нет</li>
             {{end}}
         </ul>
 
         <form id="message-form">
             <input type="text" id="content" name="content" placeholder="Type a message" required>
-            <button type="submit">Send</button>
+            <button type="submit">Отправить</button>
         </form>
     </div>
 
